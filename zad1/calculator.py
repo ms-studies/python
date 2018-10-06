@@ -2,6 +2,25 @@
 # -*- coding: utf-8 -*- 
 from menu_utils import print_menu, get
 
+def add(x, y):
+    return x + y
+
+def subtract(x, y):
+    return x - y
+
+def mulitply(x, y):
+    return x * y
+
+def divide(x, y):
+    return x / y
+
+def modulo(x, y):
+    return x % y
+
+operationSymbols = ['+', '-', '*', '/', '%']
+operationNames = ['Dodawanie', 'Odejmowanie', 'Mnozenie', 'Dzielenie', 'Modulo']
+functions = [add, subtract, mulitply, divide, modulo]
+
 def clear_console():
     print('\033[H\033[J')
 
@@ -28,18 +47,12 @@ def load_numbers():
 def handle_calculator_option(option):
     x, y = load_numbers()
     # TODO: Handle exceptions
-    if option == 0:
-        result = add(x, y)
-    elif option == 1:
-        result = subtract(x, y)
-    elif option == 2:
-        result = mulitply(x, y)
-    elif option == 3:
-        result = divide(x, y)
-    elif option == 4:
-        result = modulo(x, y)
+    result = functions[option](x, y)
+    log = '[Wynik] ' + str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
 
-    print('Wynik: ' + str(result))
+    colorStart = '\033[95m'
+    colorEnd = '\033[0m'
+    print(colorStart + log + colorEnd)
 
 # returns true if app should still be running
 def handle_option(option):
@@ -51,21 +64,6 @@ def handle_option(option):
     
     input('Naciśnij [Enter] aby kontynuować...')
     return True
-
-def add(x, y):
-    return x + y
-
-def subtract(x, y):
-    return x - y
-
-def mulitply(x, y):
-    return x * y
-
-def divide(x, y):
-    return x / y
-
-def modulo(x, y):
-    return x % y
 
 if __name__ == '__main__':
   main()
