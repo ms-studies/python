@@ -5,7 +5,6 @@ from menu_utils import print_menu, get
 def clear_console():
     print('\033[H\033[J')
 
-
 def main():
     option = 0
     shouldBeRunning = True
@@ -21,45 +20,52 @@ def main():
             option += key
         option = max(0, min(option, 5)) 
 
+def load_numbers():
+    x = float(input('Podaj pierwszą liczbę: '))
+    y = float(input('Podaj drugą liczbę: '))
+    return x, y
+
+def handle_calculator_option(option):
+    x, y = load_numbers()
+    # TODO: Handle exceptions
+    if option == 0:
+        result = add(x, y)
+    elif option == 1:
+        result = subtract(x, y)
+    elif option == 2:
+        result = mulitply(x, y)
+    elif option == 3:
+        result = divide(x, y)
+    elif option == 4:
+        result = modulo(x, y)
+
+    print('Wynik: ' + str(result))
+
 # returns true if app should still be running
 def handle_option(option):
     clear_console()
     if option < 5:
-        x = input('Podaj pierwszą liczbę: ')
-        y = input('Podaj drugą liczbę: ')
-
-    result = 0
-    if option == 0:
-        result = add(x, y)
-    elif option == 1:
-        subtract()
-    elif option == 2:
-        mulitply()
-    elif option == 3:
-        divide()
-    elif option == 4:
-        modulo()
+        handle_calculator_option(option)
     elif option == 5:
         return False
     
-    print('Wynik: '+result)
     input('Naciśnij [Enter] aby kontynuować...')
     return True
 
 def add(x, y):
     return x + y
 
-def subtract():
-    return 0
+def subtract(x, y):
+    return x - y
 
-def mulitply():
-    return 0
+def mulitply(x, y):
+    return x * y
 
-def divide():
-    return 0
+def divide(x, y):
+    return x / y
 
-def modulo():
-    return 0
+def modulo(x, y):
+    return x % y
 
 if __name__ == '__main__':
   main()
