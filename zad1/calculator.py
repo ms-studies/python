@@ -13,11 +13,21 @@ def mulitply(x, y):
     return x * y
 
 def divide(x, y):
-    return x / y
+    try:
+        return x / y
+    except ZeroDivisionError:
+        handle_zero_division_error()
 
 def modulo(x, y):
-    return x % y
-
+    try:
+        return x % y
+    except ZeroDivisionError:
+        handle_zero_division_error()
+        
+def handle_zero_division_error():
+    print('Nie można dzielić przez 0')
+    return None
+    
 operationSymbols = ['+', '-', '*', '/', '%']
 operationNames = ['Dodawanie', 'Odejmowanie', 'Mnozenie', 'Dzielenie', 'Modulo']
 functions = [add, subtract, mulitply, divide, modulo]
@@ -54,19 +64,27 @@ def main():
         shouldBeRunning = handle_option(key - 1) # - 1 because indexing starts from 0 
 
 def load_numbers():
-    x = float(input('Podaj pierwszą liczbę: '))
-    y = float(input('Podaj drugą liczbę: '))
-    return x, y
+    return load_number(), load_number()
+
+def load_number():
+    number = None
+    while(number == None):
+        try:
+            number = float(input('Podaj liczbę: '))
+        except ValueError:
+            print('To nie jest liczba :(')
+            number = None
+    return number
 
 def handle_calculator_option(option):
     x, y = load_numbers()
-    # TODO: Handle exceptions
     result = functions[option](x, y)
-    result_to_save = str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
-    save_result_to_file(result_to_save)
-    log = '[Wynik] ' + result_to_save
-    print(log)
-
+    if (result != None):
+        result_to_save = str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
+        save_result_to_file(result_to_save)
+        log = '[Wynik] ' + result_to_save
+        print(log)
+    
 # returns true if app should still be running
 def handle_option(option):
     clear_console()
