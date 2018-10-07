@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 from menu_utils_windows import print_menu, get
-from file_utils import save_result_to_file
+from file_utils import write_line_to_file
+import os
 
 def add(x, y):
     return x + y
@@ -51,9 +52,14 @@ def clear_console():
 #             option += key
 #         option = max(0, min(option, 5)) 
 
+def start_session():
+    import datetime
+    now = datetime.datetime.now()
+    write_line_to_file("== " + now.strftime("%Y-%m-%d") + " ==")
+
 #main WINDOWS
 def main():
-    import os
+    start_session()
     shouldBeRunning = True
     while(shouldBeRunning):
         #print menu
@@ -81,7 +87,7 @@ def handle_calculator_option(option):
     result = functions[option](x, y)
     if (result != None):
         result_to_save = str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
-        save_result_to_file(result_to_save)
+        write_line_to_file(result_to_save)
         log = '[Wynik] ' + result_to_save
         print(log)
     
@@ -91,6 +97,10 @@ def handle_option(option):
     if option < 5:
         handle_calculator_option(option)
     elif option == 5:
+        show_current_session()
+    elif option == 6:
+        handle_current_date()
+    elif option == 7:
         return False
     
     input('Naciśnij [Enter] aby kontynuować...')
