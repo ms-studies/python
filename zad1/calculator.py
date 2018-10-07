@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 from menu_utils_windows import print_menu, get
+from file_utils import save_result_to_file
 
 def add(x, y):
     return x + y
@@ -61,8 +62,9 @@ def handle_calculator_option(option):
     x, y = load_numbers()
     # TODO: Handle exceptions
     result = functions[option](x, y)
-    log = '[Wynik] ' + str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
-
+    result_to_save = str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
+    save_result_to_file(result_to_save)
+    log = '[Wynik] ' + result_to_save
     print(log)
 
 # returns true if app should still be running
