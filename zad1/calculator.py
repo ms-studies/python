@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
-from menu_utils import print_menu, get
+from menu_utils_windows import print_menu, get
 
 def add(x, y):
     return x + y
@@ -24,20 +24,33 @@ functions = [add, subtract, mulitply, divide, modulo]
 def clear_console():
     print('\033[H\033[J')
 
+# main UNIX
+# def main():
+#     option = 0
+#     shouldBeRunning = True
+#     while(shouldBeRunning):
+#         #print menu
+#         clear_console()
+#         print_menu(option)
+#         #get option
+#         key = get()
+#         if (key == 2):
+#             shouldBeRunning = handle_option(option)
+#         else:
+#             option += key
+#         option = max(0, min(option, 5)) 
+
+#main WINDOWS
 def main():
-    option = 0
+    import os
     shouldBeRunning = True
     while(shouldBeRunning):
         #print menu
-        clear_console()
-        print_menu(option)
+        os.system("cls")
+        print_menu()
         #get option
         key = get()
-        if (key == 2):
-            shouldBeRunning = handle_option(option)
-        else:
-            option += key
-        option = max(0, min(option, 5)) 
+        shouldBeRunning = handle_option(key - 1) # - 1 because indexing starts from 0 
 
 def load_numbers():
     x = float(input('Podaj pierwszą liczbę: '))
@@ -50,9 +63,7 @@ def handle_calculator_option(option):
     result = functions[option](x, y)
     log = '[Wynik] ' + str(x) + ' ' + operationSymbols[option] + ' ' + str(y) + ' = ' + str(result)
 
-    colorStart = '\033[95m'
-    colorEnd = '\033[0m'
-    print(colorStart + log + colorEnd)
+    print(log)
 
 # returns true if app should still be running
 def handle_option(option):
