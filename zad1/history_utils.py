@@ -19,3 +19,26 @@ def print_current_session():
             print(line)
     else:
         print("Brak operacji w obecnej sesji.")
+
+
+def print_date_history():
+    date = input('Podaj datę w formacie YYYY-MM-DD: ')
+    lines = read_lines()
+    date_lines = []
+    should_aggregate = False
+
+    for line in lines:
+        if line == ('== ' + date + ' ==\n'):
+            should_aggregate = True
+        elif line.startswith('=='):
+            should_aggregate = False
+        elif should_aggregate:
+            date_lines.append(line)
+    
+    if len(date_lines) > 0:
+        print("Operacje z dnia " + date + ":")
+        for line in date_lines:
+            print(line)
+    else:
+        print("Brak operacji z dnia " + date + ":")
+

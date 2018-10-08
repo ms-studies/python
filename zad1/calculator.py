@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 from menu_utils_windows import print_menu, get
 from file_utils import write_line_to_file
-from history_utils import start_session, print_current_session
+from history_utils import start_session, print_current_session, print_date_history
 import os
 
 def add(x, y):
@@ -78,7 +78,7 @@ def handle_option(option):
     elif option == 5:
         print_current_session()
     elif option == 6:
-        handle_current_date()
+        print_date_history()
     elif option == 7:
         return False
     
