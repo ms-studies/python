@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- 
 from menu_utils_windows import print_menu, get
 from file_utils import write_line_to_file
+from history_utils import start_session, print_current_session
 import os
 
 def add(x, y):
@@ -34,36 +35,14 @@ operationNames = ['Dodawanie', 'Odejmowanie', 'Mnozenie', 'Dzielenie', 'Modulo']
 functions = [add, subtract, mulitply, divide, modulo]
 
 def clear_console():
-    print('\033[H\033[J')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-# main UNIX
-# def main():
-#     option = 0
-#     shouldBeRunning = True
-#     while(shouldBeRunning):
-#         #print menu
-#         clear_console()
-#         print_menu(option)
-#         #get option
-#         key = get()
-#         if (key == 2):
-#             shouldBeRunning = handle_option(option)
-#         else:
-#             option += key
-#         option = max(0, min(option, 5)) 
-
-def start_session():
-    import datetime
-    now = datetime.datetime.now()
-    write_line_to_file("== " + now.strftime("%Y-%m-%d") + " ==")
-
-#main WINDOWS
 def main():
     start_session()
     shouldBeRunning = True
     while(shouldBeRunning):
         #print menu
-        os.system("cls")
+        clear_console()
         print_menu()
         #get option
         key = get()
@@ -97,7 +76,7 @@ def handle_option(option):
     if option < 5:
         handle_calculator_option(option)
     elif option == 5:
-        show_current_session()
+        print_current_session()
     elif option == 6:
         handle_current_date()
     elif option == 7:
