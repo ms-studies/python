@@ -23,6 +23,12 @@ def print_current_session():
 
 def print_date_history():
     date = input('Podaj datę w formacie YYYY-MM-DD: ')
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        print('Błędny format daty')
+        return
+
     lines = read_lines()
     date_lines = []
     should_aggregate = False
