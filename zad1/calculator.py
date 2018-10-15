@@ -28,7 +28,6 @@ def modulo(x, y):
         
 def handle_zero_division_error():
     print('Nie można dzielić przez 0')
-    return None
     
 operationSymbols = ['+', '-', '*', '/', '%']
 operationNames = ['Dodawanie', 'Odejmowanie', 'Mnozenie', 'Dzielenie', 'Modulo']
@@ -58,7 +57,6 @@ def load_number():
             number = float(input('Podaj liczbę: '))
         except ValueError:
             print('To nie jest liczba :(')
-            number = None
     return number
 
 def handle_calculator_option(option):
