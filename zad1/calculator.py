@@ -71,7 +71,7 @@ def handle_calculator_option(option):
 # returns true if app should still be running
 def handle_option(option):
     clear_console()
-    if option < 5:
+    if option > -1 and option < 5:
         handle_calculator_option(option)
     elif option == 5:
         print_current_session()
@@ -79,7 +79,9 @@ def handle_option(option):
         print_date_history()
     elif option == 7:
         return False
-    
+    else:
+        return True
+
     input('Naciśnij [Enter] aby kontynuować...')
     return True
 
