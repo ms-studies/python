@@ -1,8 +1,17 @@
 import numpy as np
 from collections import Counter
+import pandas as pd  #trzeba zrobic pip install wheel pip install pandas
+import matplotlib.pyplot as plt #trzeba zrobic pip install matplotlib
+from matplotlib import colors
 
 def main():
-    load_data()
+    data = load_data()
+    find_medians(data)
+    find_maximums(data)
+    find_minimums(data)
+    find_dominant(find_column_elements(data, 4))
+    correlated_column_1, correlated_column_2 = find_most_correlated_columns(data)
+    draw_histogram(data, correlated_column_1, correlated_column_2)
 
 def load_data():
     data = np.loadtxt("iris.data",
@@ -10,10 +19,13 @@ def load_data():
             'formats': (np.float, np.float, np.float, np.float, '|S15')},
     delimiter=',', skiprows=0)
     print(data)
-    find_medians(data)
-    find_maximums(data)
-    find_minimums(data)
-    find_dominant(find_column_elements(data, 4))
+    return data
+
+def draw_histogram(data, col1, col2):
+    plt.scatter(find_column_elements(data, col1), find_column_elements(data, col2))
+    plt.xlabel(data.dtype.names[col1])
+    plt.ylabel(data.dtype.names[col2])
+    plt.show()
 
 def find_column_elements(data, column):
     columnElements = []
@@ -56,6 +68,19 @@ def find_dominant(columnData):
     most_common = count_map.most_common(most_frequent_elements_counter)
     print('\nDominanta dla kolumny label: ' + str([elem[0] for elem in most_common]) + ', liczba wystąpień: ' + str(most_common[0][1]))
     ## TODO Zastanowic sie, czy chcemy dla wiecej niz jednej wartosci dominujacej nie wyswietlac zadnej wartosci czy wyswietlac wszystkie
+
+def find_most_correlated_columns(data):
+    data_frame = pd.DataFrame(data)
+    data_frame.drop(data_frame.columns[4], axis=1, inplace=True)
+    correlaton_matrix = data_frame.corr().abs()
+    correlated_values = (correlaton_matrix.where(np.triu(np.ones(correlaton_matrix.shape), k=1).astype(np.bool))
+                 .stack()
+                 .sort_values(ascending=False))
+
+    for row in range(correlaton_matrix.shape[0]): # df is the DataFrame
+         for col in range(correlaton_matrix.shape[1]):
+             if correlaton_matrix.iloc[row][col] == correlated_values.iloc[0]:
+                 return row, col
 
 if __name__ == '__main__':
   main()
