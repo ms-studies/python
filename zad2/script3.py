@@ -2,6 +2,7 @@ import numpy as np
 from collections import Counter
 import pandas as pd  #trzeba zrobic pip install wheel pip install pandas
 import matplotlib.pyplot as plt #trzeba zrobic pip install matplotlib
+import matplotlib.pyplot as plt
 from matplotlib import colors
 from utils import find_column_elements, load_irys_data
 
@@ -12,13 +13,18 @@ def main():
     find_minimums(data)
     find_dominant(find_column_elements(data, 4))
     correlated_column_1, correlated_column_2 = find_most_correlated_columns(data)
-    draw_histogram(data, correlated_column_1, correlated_column_2)
+    draw_histograms(data, correlated_column_1, correlated_column_2)
 
-def draw_histogram(data, col1, col2):
-    plt.scatter(find_column_elements(data, col1), find_column_elements(data, col2))
+def draw_histograms(data, col1, col2):
+
+    plt.hist(find_column_elements(data, col1), bins = 100, alpha=0.5, label=data.dtype.names[col1])
     plt.xlabel(data.dtype.names[col1])
-    plt.ylabel(data.dtype.names[col2])
     plt.show()
+
+    plt.hist(find_column_elements(data, col2), bins = 100, alpha=0.5, label=data.dtype.names[col2])
+    plt.xlabel(data.dtype.names[col2])
+    plt.show()
+
 
 def find_median(columnData):
     return np.median(columnData)
