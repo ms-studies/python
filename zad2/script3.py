@@ -3,9 +3,10 @@ from collections import Counter
 import pandas as pd  #trzeba zrobic pip install wheel pip install pandas
 import matplotlib.pyplot as plt #trzeba zrobic pip install matplotlib
 from matplotlib import colors
+from utils import find_column_elements, load_irys_data
 
 def main():
-    data = load_data()
+    data = load_irys_data()
     find_medians(data)
     find_maximums(data)
     find_minimums(data)
@@ -13,25 +14,11 @@ def main():
     correlated_column_1, correlated_column_2 = find_most_correlated_columns(data)
     draw_histogram(data, correlated_column_1, correlated_column_2)
 
-def load_data():
-    data = np.loadtxt("iris.data",
-    dtype={'names': ('sepal length', 'sepal width', 'petal length', 'petal width', 'label'),
-            'formats': (np.float, np.float, np.float, np.float, '|S15')},
-    delimiter=',', skiprows=0)
-    print(data)
-    return data
-
 def draw_histogram(data, col1, col2):
     plt.scatter(find_column_elements(data, col1), find_column_elements(data, col2))
     plt.xlabel(data.dtype.names[col1])
     plt.ylabel(data.dtype.names[col2])
     plt.show()
-
-def find_column_elements(data, column):
-    columnElements = []
-    for row in range(len(data)):
-        columnElements.append(data[row][column])
-    return columnElements
 
 def find_median(columnData):
     return np.median(columnData)
