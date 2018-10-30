@@ -17,13 +17,17 @@ def draw_histogram(data, mean):
     plt.show()
 
 def test_hypothesis(data, size):
+    hypothesis_value = 10000
     print('Badam hipoteze czy dzienna srednia urodzen wynosi 10000 na losowej probie ' + str(size) + ' krotek z poziom istotności statystycznej 5%')
     births = find_column_elements(data, 2)
     np.random.shuffle(births)
     
     mean = np.mean(births[1:size])
     print('Dzienna srednia urodzin wynosi ' + str(mean) + '.')
-    if mean >= 0.95*10000 and mean <= 1.05*10000:
+    std = np.std(births)
+    z = (mean - hypothesis_value) / (std/np.sqrt(size))
+    print('Wartosc z-testu: '+str(z))
+    if z > -1.96 and z < 1.96:
         print('Hipoteza potwierdzona.')
     else:
         print('Hipoteza obalona.')
