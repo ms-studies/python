@@ -16,13 +16,14 @@ def main():
     draw_histograms(data, correlated_column_1, correlated_column_2)
 
 def draw_histograms(data, col1, col2):
+    attribute1 = find_column_elements(data, col1)
+    normalized_attribute_1 = (attribute1 - np.min(attribute1)) / (np.amax(attribute1) - np.amin(attribute1))
+    plt.hist(normalized_attribute_1, bins = 50, label=data.dtype.names[col1])
 
-    plt.hist(find_column_elements(data, col1), bins = 100, alpha=0.5, label=data.dtype.names[col1])
-    plt.xlabel(data.dtype.names[col1])
-    plt.show()
-
-    plt.hist(find_column_elements(data, col2), bins = 100, alpha=0.5, label=data.dtype.names[col2])
-    plt.xlabel(data.dtype.names[col2])
+    attribute2 = find_column_elements(data, col2)
+    normalized_attribute_2 = (attribute2 - np.amin(attribute2)) / (np.amax(attribute2) - np.amin(attribute2))
+    plt.hist(normalized_attribute_2, bins = 50, label=data.dtype.names[col2])
+    plt.legend()
     plt.show()
 
 
