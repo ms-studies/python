@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 from utils import find_column_elements, load_irys_data
 
 def main():
     data = load_irys_data()
     draw_histogram(data)
+    test_hypothesis(data)
 
 def draw_histogram(data):
     versicolour = extract_one_species(data, 'Iris-versicolor')
@@ -37,6 +39,14 @@ def draw_histogram(data):
 def extract_one_species(data, species):
     return [a for a in data if a[4].decode() == species]
 
+def test_hypothesis(data):
+    print('Badam hipoteze czy można użyć parametru "sepal width" do rozróżnienia klas kwiatów Iris Versicolour oraz Iris Virginica z poziom istotności statystycznej 5%')
+    versicolour = extract_one_species(data, 'Iris-versicolor')
+    virginica = extract_one_species(data, 'Iris-virginica')
+    result = stats.ttest_ind(find_column_elements(versicolour, 1), find_column_elements(virginica, 1))
+    print(result)
+
+    #TODO interpret results
 
 if __name__ == '__main__':
   main()
