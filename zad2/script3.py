@@ -24,6 +24,8 @@ def draw_histograms(data, col1, col2):
     normalized_attribute_2 = (attribute2 - np.amin(attribute2)) / (np.amax(attribute2) - np.amin(attribute2))
     plt.hist(normalized_attribute_2, bins = 50, label=data.dtype.names[col2])
     plt.legend()
+    plt.ylabel('Liczba wystąpień')
+    plt.xlabel('Znormalizowany rozkład wystąpień')
     plt.show()
 
 

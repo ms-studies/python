@@ -12,17 +12,18 @@ def main():
 def draw_histogram(data):
     versicolour = extract_one_species(data, 'Iris-versicolor')
     virginica = extract_one_species(data, 'Iris-virginica')
-    setosa = extract_one_species(data, 'Iris-setosa')
+    #setosa = extract_one_species(data, 'Iris-setosa')
 
     by_sepal_width = [
         find_column_elements(versicolour, 1),
         find_column_elements(virginica, 1),
-        find_column_elements(setosa, 1)
+        #find_column_elements(setosa, 1)
     ]
 
-    labels = ['Versicolor', 'Virginica', 'Setosa']
-    colors = ['red', 'blue', 'orange']
-
+    # labels = ['Versicolor', 'Virginica', 'Setosa']
+    # colors = ['red', 'blue', 'orange']
+    labels = ['Versicolor', 'Virginica']
+    colors = ['red', 'blue']
     for arr in by_sepal_width:
         mean = np.mean(arr)
         variance = np.var(arr)

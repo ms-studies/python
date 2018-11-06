@@ -14,6 +14,13 @@ def draw_histogram(data, mean):
     plt.ylabel('Number of days')
     plt.xlabel('Number of births')
     plt.axvline(mean, color='k', linestyle='dashed', linewidth=1)
+
+    real_mean = np.mean(births)
+    variance = np.var(births)
+    sigma = np.sqrt(variance)
+    x = np.linspace(min(births), max(births), 100)
+    plt.plot(x, mlab.normpdf(x, real_mean, sigma)*400000, color='red')
+
     plt.show()
 
 def test_hypothesis(data, size):
