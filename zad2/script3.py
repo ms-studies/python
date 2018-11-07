@@ -1,7 +1,7 @@
 import numpy as np
 from collections import Counter
-import pandas as pd  #trzeba zrobic pip install wheel pip install pandas
-import matplotlib.pyplot as plt #trzeba zrobic pip install matplotlib
+import pandas as pd
+import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from utils import find_column_elements, load_irys_data
@@ -63,12 +63,12 @@ def find_dominant(columnData):
     most_frequent_elements_counter = freqency_list.count(max_count) # wyznaczenie liczby elementow z maksymalna liczba wystapien
     most_common = count_map.most_common(most_frequent_elements_counter)
     print('\nDominanta dla kolumny label: ' + str([elem[0] for elem in most_common]) + ', liczba wystąpień: ' + str(most_common[0][1]))
-    ## TODO Zastanowic sie, czy chcemy dla wiecej niz jednej wartosci dominujacej nie wyswietlac zadnej wartosci czy wyswietlac wszystkie
 
 def find_most_correlated_columns(data):
     data_frame = pd.DataFrame(data)
     data_frame.drop(data_frame.columns[4], axis=1, inplace=True)
     correlaton_matrix = data_frame.corr().abs()
+    print(correlaton_matrix)
     correlated_values = (correlaton_matrix.where(np.triu(np.ones(correlaton_matrix.shape), k=1).astype(np.bool))
                  .stack()
                  .sort_values(ascending=False))
