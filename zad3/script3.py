@@ -1,13 +1,23 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.linear_model import LinearRegression
+import statistics 
 
 def main():
     data = pd.read_csv('winequality-red.csv')
     data = addMissingData(data)
+
     print(calculatePercentage(data))
     dataWithoutMissingValues = data.dropna()
+
     drawRegressionCurve(dataWithoutMissingValues)
+    printDatasetCharacteristics(dataWithoutMissingValues['fixed acidity'])
+
+    filledDataWithMean = fillMissingValuesWithMeanValue(data)
+    printDatasetCharacteristics(filledDataWithMean['fixed acidity'])
+    drawRegressionCurve(filledDataWithMean)
+    plt.show()
 
 def addMissingData(data):
     data.sample(frac=1)
@@ -24,8 +34,39 @@ def calculatePercentage(data):
     return missing_value
 
 def drawRegressionCurve(data):
-    plt.plot(data['pH'], data['fixed acidity'],'o',markersize=2)
-    plt.show()
+    # create linear regression model
+    model = LinearRegression()
+    x = data[['pH']]
+    y = data[['fixed acidity']]
+    model.fit(x, y)
+
+    # predict y from the data
+    x_new = np.linspace(2.7, 4.1, 100) # arguments: beginning of x range, end of x range, number of samples to generate
+    y_new = model.predict(x_new[:, np.newaxis]) 
+
+    # plot the results
+    plt.figure(figsize=(7, 5))
+    ax = plt.axes()
+    ax.scatter(x, y, s=6) # s - size of dots
+    ax.plot(x_new, y_new)
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+
+    ax.axis('tight')
+
+def printDatasetCharacteristics(column):
+    print("Standard Deviation of sample is % s " 
+                % (statistics.stdev(column))) 
+    print("Mean of sample is % s " 
+                % (statistics.mean(column))) 
+
+    #TODO dodac kwartyle
+
+def fillMissingValuesWithMeanValue(data):
+    mean = data['fixed acidity'].mean()
+    data.fillna(value=mean, inplace=True)
+    return data
 
 if __name__ == '__main__':
   main()
