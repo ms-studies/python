@@ -59,7 +59,10 @@ def printDatasetCharacteristics(column):
     print("Standard Deviation of sample is % s " 
                 % (statistics.stdev(column))) 
     print("Mean of sample is % s " 
-                % (statistics.mean(column))) 
+                % (statistics.mean(column)))
+    print("Quartiles of sample are \n% s " 
+                % (column.quantile([0.25,0.5,0.75]))) 
+    
 
     #TODO dodac kwartyle
 
