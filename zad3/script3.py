@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import statistics 
+import math
 
 def main():
     data = pd.read_csv('winequality-red.csv')
@@ -10,14 +11,32 @@ def main():
 
     print(calculatePercentage(data))
     dataWithoutMissingValues = data.dropna()
-
+    
+    #linear regression
+    print("\n========= Without missing values ==========")
     drawRegressionCurve(dataWithoutMissingValues)
     printDatasetCharacteristics(dataWithoutMissingValues['fixed acidity'])
 
-    filledDataWithMean = fillMissingValuesWithMeanValue(data)
+    #filling with mean
+    print("\n========= Filled with mean ==========")
+    filledDataWithMean = fillMissingValuesWithMeanValue(data.copy())
     printDatasetCharacteristics(filledDataWithMean['fixed acidity'])
     drawRegressionCurve(filledDataWithMean)
+
+    #filling with regression
+    print("\n========= Filled with regression ==========")
+    filledDataWithRegression = fillMissingValuesRegression(data.copy())
+    printDatasetCharacteristics(filledDataWithRegression['fixed acidity'])
+    drawRegressionCurve(filledDataWithRegression)
+
+    #filling with interpolation
+    print("\n========= Filled with interpolation ==========")
+    filledDataWithInterpolation = fillMissingValuesInterpolation(data.copy())
+    printDatasetCharacteristics(filledDataWithInterpolation['fixed acidity'])
+    drawRegressionCurve(filledDataWithInterpolation)
+
     plt.show()
+
 
 def addMissingData(data):
     data.sample(frac=1)
@@ -33,12 +52,15 @@ def calculatePercentage(data):
     missing_value.sort_values('percent_missing', inplace=True)
     return missing_value
 
-def drawRegressionCurve(data):
-    # create linear regression model
+def createLinearRegressionModel(data):
     model = LinearRegression()
     x = data[['pH']]
     y = data[['fixed acidity']]
     model.fit(x, y)
+    return model, x, y
+
+def drawRegressionCurve(data):
+    model, x, y = createLinearRegressionModel(data)
 
     # predict y from the data
     x_new = np.linspace(2.7, 4.1, 100) # arguments: beginning of x range, end of x range, number of samples to generate
@@ -50,8 +72,8 @@ def drawRegressionCurve(data):
     ax.scatter(x, y, s=6) # s - size of dots
     ax.plot(x_new, y_new)
 
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
+    ax.set_xlabel('pH')
+    ax.set_ylabel('fixed acidity')
 
     ax.axis('tight')
 
@@ -69,6 +91,21 @@ def printDatasetCharacteristics(column):
 def fillMissingValuesWithMeanValue(data):
     mean = data['fixed acidity'].mean()
     data.fillna(value=mean, inplace=True)
+    return data
+
+def fillMissingValuesRegression(data):
+    dataWithoutMissingValues = data.dropna()
+    regressionModel, x, y = createLinearRegressionModel(dataWithoutMissingValues)
+
+    for index, row in data.iterrows():
+        if math.isnan(row['fixed acidity']):
+            prediction = regressionModel.predict(np.array([[row['pH']]]))
+            data.at[index, 'fixed acidity'] = prediction[0][0]
+    return data
+
+def fillMissingValuesInterpolation(data):
+    data = data.sort_values(['pH'])
+    data = data.interpolate()
     return data
 
 if __name__ == '__main__':
