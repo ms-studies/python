@@ -30,7 +30,13 @@ def main():
     printDatasetCharacteristics(filledDataWithRegression['fixed acidity'])
     drawRegressionCurve(filledDataWithRegression, 'Missing data: 6.25%, filling method: regression')
 
-    #filling with interpolation
+    #filling with hot-deck
+    print("\n========= Filled with hot-deck ==========")
+    filledWithHotDeck = fillMissingValuesHotDeck(data.copy())
+    printDatasetCharacteristics(filledWithHotDeck['fixed acidity'])
+    drawRegressionCurve(filledWithHotDeck, 'Missing data: 6.25%, filling method: hot-deck')
+
+    # #filling with interpolation
     print("\n========= Filled with interpolation ==========")
     filledDataWithInterpolation = fillMissingValuesInterpolation(data.copy())
     printDatasetCharacteristics(filledDataWithInterpolation['fixed acidity'])
@@ -39,15 +45,15 @@ def main():
     print("\n=======================GRADE 5==================================")
     title = 'Missing data: 15%, filling method: regression'
     print("\n========= " + title + " ==========")
-    runRegressionForDatasetWithMissingValues(data, 240, title)
+    runRegressionForDatasetWithMissingValues(data.copy(), 240, title)
 
     title = 'Missing data: 30%, filling method: regression'
     print("\n========= " + title + " ==========")
-    runRegressionForDatasetWithMissingValues(data, 480, title)
+    runRegressionForDatasetWithMissingValues(data.copy(), 480, title)
 
     title = 'Missing data: 45%, filling method: regression'
     print("\n========= " + title + " ==========")
-    runRegressionForDatasetWithMissingValues(data, 720, title)
+    runRegressionForDatasetWithMissingValues(data.copy(), 720, title)
 
     plt.show()
 
@@ -122,6 +128,30 @@ def fillMissingValuesRegression(data):
 def fillMissingValuesInterpolation(data):
     data = data.sort_values(['pH'])
     data = data.interpolate()
+    return data
+
+def fillMissingValuesHotDeck(data):
+    dataWithoutMissingValues = data.dropna()
+    dataWithMissingValues = data[data.isnull().any(axis=1)]
+
+    for index1, row1 in dataWithMissingValues.iterrows(): # for each Nan row
+        maxSameValues = 0
+        predictedAcidity = 0
+        for index2, row2 in dataWithoutMissingValues.iterrows():
+            sameValues = 0
+
+            for column in dataWithMissingValues: #for each column
+                if column != 'fixed acidity':
+                    diff = row2[column] - row1[column]
+                    if diff == 0:
+                        sameValues += 1
+
+            if sameValues > maxSameValues:
+                maxSameValues = sameValues
+                predictedAcidity = row2['fixed acidity']
+                
+        data.at[index1, 'fixed acidity'] = predictedAcidity
+
     return data
 
 def runRegressionForDatasetWithMissingValues(data, missingSamplesCounter, plotTitle):
