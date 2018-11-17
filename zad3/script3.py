@@ -7,40 +7,54 @@ import math
 
 def main():
     data = pd.read_csv('winequality-red.csv')
-    data = addMissingData(data)
+    data = addMissingData(data, 100)
 
     print(calculatePercentage(data))
     dataWithoutMissingValues = data.dropna()
     
     #linear regression
     print("\n========= Without missing values ==========")
-    drawRegressionCurve(dataWithoutMissingValues)
+    drawRegressionCurve(dataWithoutMissingValues, 'Missing data: 0%')
     printDatasetCharacteristics(dataWithoutMissingValues['fixed acidity'])
 
     #filling with mean
     print("\n========= Filled with mean ==========")
     filledDataWithMean = fillMissingValuesWithMeanValue(data.copy())
     printDatasetCharacteristics(filledDataWithMean['fixed acidity'])
-    drawRegressionCurve(filledDataWithMean)
+    drawRegressionCurve(filledDataWithMean, 'Missing data: 6.25%, filling method: mean')
 
+    print("\n=======================GRADE 4==================================")
     #filling with regression
     print("\n========= Filled with regression ==========")
     filledDataWithRegression = fillMissingValuesRegression(data.copy())
     printDatasetCharacteristics(filledDataWithRegression['fixed acidity'])
-    drawRegressionCurve(filledDataWithRegression)
+    drawRegressionCurve(filledDataWithRegression, 'Missing data: 6.25%, filling method: regression')
 
     #filling with interpolation
     print("\n========= Filled with interpolation ==========")
     filledDataWithInterpolation = fillMissingValuesInterpolation(data.copy())
     printDatasetCharacteristics(filledDataWithInterpolation['fixed acidity'])
-    drawRegressionCurve(filledDataWithInterpolation)
+    drawRegressionCurve(filledDataWithInterpolation, 'Missing data: 6.25%, filling method: interpolation')
+
+    print("\n=======================GRADE 5==================================")
+    title = 'Missing data: 15%, filling method: regression'
+    print("\n========= " + title + " ==========")
+    runRegressionForDatasetWithMissingValues(data, 240, title)
+
+    title = 'Missing data: 30%, filling method: regression'
+    print("\n========= " + title + " ==========")
+    runRegressionForDatasetWithMissingValues(data, 480, title)
+
+    title = 'Missing data: 45%, filling method: regression'
+    print("\n========= " + title + " ==========")
+    runRegressionForDatasetWithMissingValues(data, 720, title)
 
     plt.show()
 
 
-def addMissingData(data):
+def addMissingData(data, missingSamplesCounter):
     data.sample(frac=1)
-    for i in range(100):
+    for i in range(missingSamplesCounter):
         data.iat[i,0] = None
     return data
 
@@ -59,8 +73,12 @@ def createLinearRegressionModel(data):
     model.fit(x, y)
     return model, x, y
 
-def drawRegressionCurve(data):
+def drawRegressionCurve(data, title):
     model, x, y = createLinearRegressionModel(data)
+
+    print('\nRegression curve parameters: ')
+    print('Intercept: b0 =' + str(model.intercept_))
+    print('Slope: b1 =' + str(model.coef_))
 
     # predict y from the data
     x_new = np.linspace(2.7, 4.1, 100) # arguments: beginning of x range, end of x range, number of samples to generate
@@ -74,6 +92,7 @@ def drawRegressionCurve(data):
 
     ax.set_xlabel('pH')
     ax.set_ylabel('fixed acidity')
+    ax.set_title(title)
 
     ax.axis('tight')
 
@@ -85,9 +104,6 @@ def printDatasetCharacteristics(column):
     print("Quartiles of sample are \n% s " 
                 % (column.quantile([0.25,0.5,0.75]))) 
     
-
-    #TODO dodac kwartyle
-
 def fillMissingValuesWithMeanValue(data):
     mean = data['fixed acidity'].mean()
     data.fillna(value=mean, inplace=True)
@@ -107,6 +123,17 @@ def fillMissingValuesInterpolation(data):
     data = data.sort_values(['pH'])
     data = data.interpolate()
     return data
+
+def runRegressionForDatasetWithMissingValues(data, missingSamplesCounter, plotTitle):
+    data = addMissingData(data, missingSamplesCounter)
+    print(calculatePercentage(data))
+    dataWithoutMissingValues = data.dropna()
+    print("\n==== Before filling missing data =====")
+    printDatasetCharacteristics(dataWithoutMissingValues['fixed acidity'])
+    filledDataWithRegression = fillMissingValuesRegression(data.copy())
+    print("\n==== After filling missing data =====")
+    printDatasetCharacteristics(filledDataWithRegression['fixed acidity'])
+    drawRegressionCurve(filledDataWithRegression, plotTitle)
 
 if __name__ == '__main__':
   main()
