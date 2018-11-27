@@ -55,7 +55,7 @@ def useChi2(data_without_class, class_column):
 
 def runClassification(data_without_class, class_column, initLearningRate, epochs, name):
     start = time.process_time()
-    X_train, X_test, y_train, y_test = train_test_split(data_without_class, class_column, random_state = 42)
+    X_train, X_test, y_train, y_test = train_test_split(data_without_class, class_column, random_state = 21)
 
     mlp = MLPClassifier(hidden_layer_sizes = (100, ), learning_rate_init = initLearningRate)
 
@@ -88,7 +88,7 @@ def transformWithPCA(data_without_class, class_column):
     pca_1.fit(data_without_class)
     explained_variance_1 = pca_1.explained_variance_ratio_
     print("Variance for all components: " + str(explained_variance_1))# prints variance for all components
-    print("Sum of importance: " + str(sum(explained_variance_1)))
+    print("Sum of variances ratios: " + str(sum(explained_variance_1)))
 
     print("\n===== PCA with 2 best parameters=====")
     pca_2 = PCA(n_components = 2, copy = True)
@@ -96,19 +96,21 @@ def transformWithPCA(data_without_class, class_column):
     explained_variance_2 = pca_2.explained_variance_ratio_
     X_transformed = pca_2.transform(data_without_class)
     print("Two principal components variance: " + str(explained_variance_2))# prints two components with biggest variance
-    print("Sum of importance: " + str(sum(explained_variance_2)))
+    print("Sum of variance ratios: " + str(sum(explained_variance_2)))
     return X_transformed
 
 def transformWithPCAWorst(data_without_class, class_column):
-    print("\n===== PCA with 2 worst parameters=====")
-    pca = PCA(copy = True)
-    pca.fit(data_without_class)
-    explained_variance = pca.explained_variance_ratio_[-2: ]
-    X_transformed = pca.transform(data_without_class)[: , -2: ]
-    print("Two worst components variance: " + str(explained_variance))# prints two components with lowest variance
-    print("Sum of importance: " + str(sum(explained_variance)))
+	print("\n===== PCA with 2 worst parameters=====")
+	pca = PCA(copy = True)
+	pca.fit(data_without_class)
+	explained_variance = pca.explained_variance_ratio_
+	explained_variance = explained_variance[-2: ]
+	X_transformed = pca.transform(data_without_class)
+	X_transformed = X_transformed[:, -2: ]
+	print("Two worst components variance: " + str(explained_variance))# prints two components with lowest variance
+	print("Sum of variance ratios: " + str(sum(explained_variance)))
 
-    return X_transformed
+	return X_transformed
 
 if __name__ == '__main__':
     main()
