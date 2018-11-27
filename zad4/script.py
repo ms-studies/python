@@ -7,24 +7,26 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
 def main():
-    colnames = ['col1','col2','col3','col4','col5','col6','col7','col8','col9','col10','col11','col12','col13',
-                'col14','col15','col16','col17','col18','col19','col20','col21','col22','col23','col24','col25','col26','col27','col28','col29','col30','col31','col32','col33','col34','col35']
+	colnames = ['col1','col2','col3','col4','col5','col6','col7','col8','col9','col10','col11','col12','col13',
+				'col14','col15','col16','col17','col18','col19','col20','col21','col22','col23','col24','col25','col26','col27','col28','col29','col30','col31','col32','col33','col34','col35']
 
-    data = pd.read_csv('data.csv', names = colnames)
-    class_column = data.iloc[:, 34]
-    data_without_class = data.iloc[:,0:34]
+	data = pd.read_csv('data.csv', names = colnames)
+	class_column = data.iloc[:, 34]
+	data_without_class = data.iloc[:,0:34]
 
-    # classification with all attributes
-    runClassification(data_without_class, class_column, 0.01, 100)
+	# classification with all attributes
+	runClassification(data_without_class, class_column, 0.001, 1000)
 
-    # classification with two attributes chosen by PCA
-    X_transformed_PCA = transformWithPCA(data_without_class, class_column)
-    runClassification(X_transformed_PCA, class_column, 0.001, 1000)
+	# classification with two attributes chosen by PCA
+	X_transformed_PCA = transformWithPCA(data_without_class, class_column)
+	runClassification(X_transformed_PCA, class_column, 0.001, 1000)
+
+	plt.show()
 
 def runClassification(data_without_class, class_column, initLearningRate, epochs):
 	X_train, X_test, y_train, y_test = train_test_split(data_without_class, class_column, random_state=42)
 
-	mlp = MLPClassifier(hidden_layer_sizes=(100,), max_iter = 10000, learning_rate_init=initLearningRate)
+	mlp = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=initLearningRate)
     
 	scores_train = []
 	scores_test = []
@@ -40,12 +42,12 @@ def runClassification(data_without_class, class_column, initLearningRate, epochs
 	print("Accuracy score: " + str(accuracy_score(y_test,mlp.predict(X_test))))
 
 def drawScoresPlot(scores_train, scores_test):
+	plt.figure()
 	plt.plot(scores_train, color='green', alpha=0.8, label='Train')
 	plt.plot(scores_test, color='magenta', alpha=0.8, label='Test')
 	plt.title("Accuracy over epochs", fontsize=14)
 	plt.xlabel('Epochs')
 	plt.legend(loc='upper left')
-	plt.show()
 
 def transformWithPCA(data_without_class, class_column):
     pca_1 = PCA()
