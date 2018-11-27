@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 def main():
     colnames = ['col1','col2','col3','col4','col5','col6','col7','col8','col9','col10','col11','col12','col13',
@@ -14,20 +15,37 @@ def main():
     data_without_class = data.iloc[:,0:34]
 
     # classification with all attributes
-    runClassification(data_without_class, class_column)
-    
+    runClassification(data_without_class, class_column, 0.01, 100)
+
     # classification with two attributes chosen by PCA
     X_transformed_PCA = transformWithPCA(data_without_class, class_column)
-    runClassification(X_transformed_PCA, class_column)
+    runClassification(X_transformed_PCA, class_column, 0.001, 1000)
 
-def runClassification(data_without_class, class_column):
-    X_train, X_test, y_train, y_test = train_test_split(data_without_class, class_column, random_state=42)
+def runClassification(data_without_class, class_column, initLearningRate, epochs):
+	X_train, X_test, y_train, y_test = train_test_split(data_without_class, class_column, random_state=42)
 
-    mlp = MLPClassifier(max_iter = 10000)
-    mlp.fit(X_train,y_train)
-    print("Accuracy score: " + str(accuracy_score(y_test,mlp.predict(X_test))))
-    # nie zrobic tego wykresu tak jak doszlismy do wniosku, ze powinno byc to zrobione
-    # bo mi sie jednak wydaje, ze to dla roznej liczby iteracji to trzeba zrobic
+	mlp = MLPClassifier(hidden_layer_sizes=(100,), max_iter = 10000, learning_rate_init=initLearningRate)
+    
+	scores_train = []
+	scores_test = []
+
+	# LEARNING
+	for _ in range(epochs):
+		mlp.partial_fit(X_train, y_train, classes=np.unique(y_train))
+		scores_train.append(mlp.score(X_train, y_train))
+		scores_test.append(mlp.score(X_test, y_test))
+
+	# VISUALISATION
+	drawScoresPlot(scores_train, scores_test)
+	print("Accuracy score: " + str(accuracy_score(y_test,mlp.predict(X_test))))
+
+def drawScoresPlot(scores_train, scores_test):
+	plt.plot(scores_train, color='green', alpha=0.8, label='Train')
+	plt.plot(scores_test, color='magenta', alpha=0.8, label='Test')
+	plt.title("Accuracy over epochs", fontsize=14)
+	plt.xlabel('Epochs')
+	plt.legend(loc='upper left')
+	plt.show()
 
 def transformWithPCA(data_without_class, class_column):
     pca_1 = PCA()
