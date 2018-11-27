@@ -5,6 +5,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from script2 import runKnnClustering
 
 def main():
     colnames = ['col1','col2','col3','col4','col5','col6','col7','col8','col9','col10','col11','col12','col13',
@@ -20,6 +22,9 @@ def main():
     # classification with two attributes chosen by PCA
     X_transformed_PCA = transformWithPCA(data_without_class, class_column)
     runClassification(X_transformed_PCA, class_column, 0.001, 1000)
+
+    # clustering with knn
+    runKnnClustering(X_transformed_PCA)
 
 def runClassification(data_without_class, class_column, initLearningRate, epochs):
 	X_train, X_test, y_train, y_test = train_test_split(data_without_class, class_column, random_state=42)
