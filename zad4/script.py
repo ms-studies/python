@@ -27,16 +27,19 @@ def main():
 	# classification with two attributes chosen by PCA
 	X_transformed_PCA = transformWithPCA(data_without_class, class_column)
 	runClassification(X_transformed_PCA, class_column, 0.001, 1000, "PCA, 2 best")
+	runKnnClustering(X_transformed_PCA, class_column)
 
 	X_transformed_PCA_2 = transformWithPCAWorst(data_without_class, class_column)
 	runClassification(X_transformed_PCA_2, class_column, 0.001, 1000, "PCA, 2 worst")
+	runKnnClustering(X_transformed_PCA_2, class_column)
 
 	print("\n===== Chi 2 =====")
 	X_transformed_chi2 = useChi2(data_without_class, class_column)
 	runClassification(X_transformed_chi2, class_column, 0.001, 1000, "Chi 2")
+	runKnnClustering(X_transformed_chi2, class_column)
 
 	# clustering with knn
-	runKnnClustering(X_transformed_PCA)
+	# runKnnClustering(X_transformed_PCA_2, class_column)
 
 	plt.show()
 
@@ -71,12 +74,13 @@ def runClassification(data_without_class, class_column, initLearningRate, epochs
     print("Classification took " + str(time.process_time() - start) + " units(?)")
 
 def drawScoresPlot(scores_train, scores_test, name):
-    plt.figure()
-    plt.plot(scores_train, color = 'green', alpha = 0.8, label = 'Train')
-    plt.plot(scores_test, color = 'magenta', alpha = 0.8, label = 'Test')
-    plt.title(name + ": accuracy over epochs", fontsize = 14)
-    plt.xlabel('Epochs')
-    plt.legend(loc = 'upper left')
+	plt.figure()
+	plt.subplot(2, 1, 1)
+	plt.plot(scores_train, color = 'green', alpha = 0.8, label = 'Train')
+	plt.plot(scores_test, color = 'magenta', alpha = 0.8, label = 'Test')
+	plt.title(name + ": accuracy over epochs", fontsize = 14)
+	plt.xlabel('Epochs')
+	plt.legend(loc = 'upper left')
 
 def transformWithPCA(data_without_class, class_column):
     print("\n===== PCA with all parameters=====")
