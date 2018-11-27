@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import time
+from sklearn.feature_selection import chi2, SelectKBest
 
 def main():
 	colnames = ['col1','col2','col3','col4','col5','col6','col7','col8','col9','col10','col11','col12','col13',
@@ -14,6 +15,8 @@ def main():
 	data = pd.read_csv('data.csv', names = colnames)
 	class_column = data.iloc[:, 34]
 	data_without_class = data.iloc[:,0:34]
+	data_without_class=data_without_class + 1
+
 
 	# classification with all attributes
 	runClassification(data_without_class, class_column, 0.001, 1000, "Full data")
@@ -25,7 +28,21 @@ def main():
 	X_transformed_PCA_2 = transformWithPCAWorst(data_without_class, class_column)
 	runClassification(X_transformed_PCA_2, class_column, 0.001, 1000, "PCA, 2 worst")
 
+	print("\n===== Chi 2 =====")
+	X_transformed_chi2 = useChi2(data_without_class, class_column)
+	runClassification(X_transformed_chi2, class_column, 0.001, 1000, "Chi 2")
+
 	plt.show()
+
+def useChi2(data_without_class, class_column):
+	test = SelectKBest(score_func=chi2, k=2)
+	fit = test.fit(data_without_class, class_column)
+	# summarize scores
+	# print(fit.scores_)
+	features = fit.transform(data_without_class)
+	# summarize selected features
+	# print(features)
+	return features
 
 def runClassification(data_without_class, class_column, initLearningRate, epochs, name):
 	start = time.process_time()
